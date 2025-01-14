@@ -714,7 +714,7 @@ def _sign_common(
                 sig_output = sys.stdout
 
             signature = base64.b64encode(
-                result._inner.message_signature.signature
+                result._inner.message_signature.signature  # type: ignore[union-attr]
             ).decode()
             print(signature, file=sig_output)
             if outputs.signature is not None:
@@ -1205,7 +1205,7 @@ def _fix_bundle(args: argparse.Namespace) -> None:
     else:
         rekor = RekorClient.production()
 
-    raw_bundle = RawBundle().from_json(args.bundle.read_text())
+    raw_bundle = RawBundle.from_dict(json.loads(args.bundle.read_bytes()))
 
     if len(raw_bundle.verification_material.tlog_entries) != 1:
         _fatal("unfixable bundle: must have exactly one log entry")
